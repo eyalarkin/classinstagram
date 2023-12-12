@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Submission</title>
+    <style>
+        #box {
+            width: 1000px;
+            padding: 20px;
+            margin: 20px;
+            border: 2px solid black;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Submission</h1>
+
+    <form action="/confirmSubmission" method="post" onsubmit="return confirmSubmission()">
+        <div id="box">
+            Name:<input type="text" id="name" name="name" placeholder="eg: John Smith">
+            Handle:<input type="text" id="handle" name="handle" placeholder="@example123"> <br>
+            Bio:
+            <textarea id="bio" name="bio" rows="10" cols="60"></textarea>
+            <br>
+            School:
+            <select id="school" name="school">
+                <option value="umd">UMD</option>
+                <option value="umass">UMass Amherst</option>
+                <option value="rutgers">Rutgers</option>
+                <option value="upenn">UPenn</option>
+            </select>
+        </div>
+        <button type="reset">Reset</button>
+        <button type="submit">Submit Application</button>
+    </form>
+
+    <hr>
+    <a href="/">HOME</a>
+
+    <script>
+        function confirmSubmission() {
+            const confirmation = confirm("Are you sure you want to submit your information?\n You will not be able to change your information once submitted.");
+            return confirmation;
+        }
+    </script>
+</body>
+</html>

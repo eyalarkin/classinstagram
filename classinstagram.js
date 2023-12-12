@@ -16,7 +16,7 @@ const dbAndCollection = {db: dbName, collection: collection};
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const uri = `get uri`;
-const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
+// const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 
 const app = express();
 
@@ -26,6 +26,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static('templates'));
 
 const port = 443;
+
+app.listen(port);
 
 app.get('/', (req, res) => {
     res.render("index");
