@@ -43,11 +43,11 @@ app.post('/submit', (req, res) => {
     try {
         const database = client.db('Cluster0');
         const collection = database.collection('applications');
-        res.render('Confirmation', {
+        res.render('confirmSubmission', {
             name,
-            email,
-            gpa,
-            info,
+            handle,
+            bio,
+            school,
         });
     } catch {
         res.send("uh oh, found an error")
