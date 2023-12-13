@@ -5,6 +5,7 @@ const ejs = require('ejs');
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+const file_client = require('filestack-js').init('AvuBjdcEvRNeVCufw3BrDz');
 
 const username = process.env.USERNAME;
 const password = process.env.PASSWORD;
@@ -15,8 +16,8 @@ const dbAndCollection = {db: dbName, collection: collection};
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-const uri = `get uri`;
-// const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
+const uri = "mongodb+srv://hardikbhardwaj676:HHardik003@cluster0.bddhgqd.mongodb.net/?retryWrites=true&w=majority";
+const db_client = new MongoClient(uri);
 
 const app = express();
 
@@ -38,6 +39,19 @@ app.get('/submit', (req, res) => {
 });
 
 app.post('/submit', (req, res) => {
+    const { name, handle, bio, school } = req.body;
+    try {
+        const database = client.db('Cluster0');
+        const collection = database.collection('applications');
+        res.render('Confirmation', {
+            name,
+            email,
+            gpa,
+            info,
+        });
+    } catch {
+        res.send("uh oh, found an error")
+    }
     res.render("confirmSubmission");
 });
 

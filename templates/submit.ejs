@@ -41,6 +41,7 @@
                 <option value="upenn">UPenn</option>
             </select>
         </div>
+        <button id="picture">select picture</button>
         <button type="reset">Reset</button>
         <button type="submit">Submit Application</button>
     </form>
@@ -49,10 +50,25 @@
     <a href="/">HOME</a>
 
     <script>
+        import * as filestack from 'filestack-js';
         function confirmSubmission() {
             const confirmation = confirm("Are you sure you want to submit your information?\n You will not be able to change your information once submitted.");
             return confirmation;
         }
+
+        function openPicker() {
+            const client = filestack.init('AvuBjdcEvRNeVCufw3BrDz');
+            client.picker({
+                fromSources: ['local_file_system'],
+                maxSize: 1000*1000,
+                onSuccess: (result) => {
+                    console.log('Filestack Picker Result:', result);
+                },
+                onError: (error) => {
+                    console.error('Filestack Picker Error:', error);
+                }
+            }).open();
+        };
     </script>
 </body>
 </html>

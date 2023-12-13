@@ -18,6 +18,7 @@
     "http": "^0.0.1-security",
     "mongodb": "^6.3.0",
     "nodemon": "^3.0.1",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "filestack-js": "^3.28.0"
   }
 }
