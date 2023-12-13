@@ -4,7 +4,7 @@ const fs = require('fs');
 const ejs = require('ejs');
 const express = require('express');
 const bodyParser = require('body-parser');
-const fileUpload = require('express-fileupload');
+const multer = require('multer');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 // const file_client = require('filestack-js').init('AvuBjdcEvRNeVCufw3BrDz');
 
@@ -22,14 +22,24 @@ const client = new MongoClient(uri);
 
 const app = express();
 
-app.use(fileUpload());
 
 app.set('views', path.resolve(__dirname, 'templates'));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static('templates'));
+app.use('/uploads', express.static('uploads'));
 
 const port = 443;
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+var upload = multer({ storage: storage });
 
 app.listen(port);
 
@@ -45,14 +55,14 @@ app.get('/submit', (req, res) => {
     res.render("submit");
 });
 
-app.post('/submit', async (req, res) => {
+app.post('/submit', upload.array('profile-images', 10), async (req, res) => {
     const { name, handle, bio, school } = req.body;
-    const files = req.files;
-    console.log(files);
-    const { image } = files;
-    if (!image) return res.sendStatus(400);
-    image.mv(__dirname + '/uploads/' + image.name);
-    console.log("picture location is: https://class-instagram.onrender.com:443/uploads/" + image.name);
+    var response = '<a href="/">Home</a><br>';
+    response += "Files uploaded successfully.<br>";
+    for (var i = 0; i < req.files.length; i++) {
+        response += `<img src="${req.files[i].path}" /><br>`;
+        console.log("Picture " + i + " uploaded to: " + req.files[i].path);
+    }
     try {
         const database = client.db('Cluster0');
         const collection = database.collection('applications');
@@ -62,12 +72,7 @@ app.post('/submit', async (req, res) => {
             bio,
             school,
         });
-        res.render('confirmSubmission', {
-            name,
-            handle,
-            bio,
-            school,
-        });
+        res.send(response)
     } catch(e) {
         console.error(e);
         res.send("uh oh, found an error")
