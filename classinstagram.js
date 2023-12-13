@@ -55,7 +55,8 @@ app.post('/submit', async (req, res) => {
             bio,
             school,
         });
-    } catch {
+    } catch(e) {
+        console.error(e);
         res.send("uh oh, found an error")
     } finally {
         await client.close();
