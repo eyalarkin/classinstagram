@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Pictures</title>
+    <script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js" crossorigin="anonymous"></script>
+    <script>
+        const client = filestack.init('AvuBjdcEvRNeVCufw3BrDz');
+        client.picker({
+                fromSources: ['local_file_system'],
+                maxSize: 1000*1000,
+                onSuccess: (result) => {
+                    console.log('Filestack Picker Result:', result);
+                },
+                onError: (error) => {
+                    console.error('Filestack Picker Error:', error);
+                }
+        }).open();
+    </script>
+</head>
+<body>
+</body>
+</html>
