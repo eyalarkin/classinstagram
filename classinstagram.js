@@ -38,11 +38,17 @@ app.get('/submit', (req, res) => {
     res.render("submit");
 });
 
-app.post('/submit', (req, res) => {
+app.post('/submit', async (req, res) => {
     const { name, handle, bio, school } = req.body;
     try {
         const database = client.db('Cluster0');
         const collection = database.collection('applications');
+        const result = await collection.insertOne({
+            name,
+            email,
+            gpa,
+            info,
+        });
         res.render('confirmSubmission', {
             name,
             handle,
@@ -51,8 +57,9 @@ app.post('/submit', (req, res) => {
         });
     } catch {
         res.send("uh oh, found an error")
+    } finally {
+        await client.close();
     }
-    res.render("confirmSubmission");
 });
 
 app.get('/errorSubmission', (req, res) => {
