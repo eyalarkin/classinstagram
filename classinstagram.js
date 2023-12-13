@@ -58,8 +58,10 @@ app.get('/submit', (req, res) => {
 app.post('/submit', upload.array('profile-images', 10), async (req, res) => {
     const { name, handle, bio, school } = req.body;
     var response = '<a href="/">Home</a><br>';
+    var pics = new Array();
     response += "Files uploaded successfully.<br>";
     for (var i = 0; i < req.files.length; i++) {
+        pics.push(req.files[i].path);
         response += `<img src="${req.files[i].path}" /><br>`;
         console.log("Picture " + i + " uploaded to: " + req.files[i].path);
     }
@@ -67,10 +69,11 @@ app.post('/submit', upload.array('profile-images', 10), async (req, res) => {
         const database = client.db('Cluster0');
         const collection = database.collection('applications');
         const result = await collection.insertOne({
-            name,
-            handle,
-            bio,
-            school,
+            name: name,
+            handle: handle,
+            bio: bio,
+            school: school,
+            images: pics
         });
         res.send(response)
     } catch(e) {
