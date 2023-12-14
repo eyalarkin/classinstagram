@@ -6,14 +6,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') });
-// const file_client = require('filestack-js').init('AvuBjdcEvRNeVCufw3BrDz');
 
-const username = process.env.USERNAME;
-const password = process.env.PASSWORD;
-const dbName  = process.env.MONGO_DB_NAME;
-const collection = process.env.MONGO_DB_COLLECTION;
-
-const dbAndCollection = {db: dbName, collection: collection};
+const dbAndCollection = {db: 'Cluster0', collection: 'applications'};
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -62,7 +56,7 @@ app.post('/submit', upload.array('profile-images', 10), async (req, res) => {
     response += "Files uploaded successfully.<br>";
     for (var i = 0; i < req.files.length; i++) {
         pics.push(req.files[i].path);
-        response += `<img src="${req.files[i].path}" /><br>`;
+        response += `<img src="${req.files[i].path}"><br>`;
         console.log("Picture " + i + " uploaded to: " + req.files[i].path);
     }
     try {
@@ -92,8 +86,30 @@ app.get('/identity', (req, res) => {
     res.render("adminConfirm");
 });
 
-app.post('/admin', (req, res) => {
-    res.render("admin");
+app.post('/admin', async (req, res) => {
+    try {
+        await client.connect();
+        let filter = {};
+        const cursor = client.db(dbAndCollection.db)
+        .collection(dbAndCollection.collection)
+        .find(filter);
+
+        const result = await cursor.toArray();
+        console.log(`Found: ${result.length} movies`);
+        console.log(result);
+        fs.writeFile("data.json", result.toString(), function(err) {
+            if (err) {
+                console.log(err);
+            }
+        });
+        res.render("admin");
+    } catch (e) {
+        console.error(e);
+        res.send("uh oh, found an error");
+    } finally {
+        await client.close();
+    }
+
 });
 
 app.get('/admin', (req, res) => {
