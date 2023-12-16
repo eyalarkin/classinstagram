@@ -5,6 +5,8 @@ const ejs = require('ejs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const axios = require('axios');
+const ngrok = require('ngrok');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 process.stdin.setEncoding('utf8');
