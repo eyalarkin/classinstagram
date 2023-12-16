@@ -64,7 +64,7 @@ app.post('/submit', upload.array('profile-images', 10), async (req, res) => {
     response += "Files uploaded successfully.<br>";
     for (var i = 0; i < req.files.length; i++) {
         pics.push(req.files[i].path);
-        response += `<img src="${req.files[i].path}"><br>`;
+        response += `<img style="width:30%;height:auto;border: 0.5rem double black;" src="${req.files[i].path}"><br>`;
         console.log("Picture " + i + " uploaded to: " + req.files[i].path);
     }
     try {
