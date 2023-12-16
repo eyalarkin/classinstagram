@@ -188,7 +188,7 @@ app.post('/admin', async (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-    res.send("uh oh");
+    res.redirect('/identity');
 });
 
 const prompt = "classinstagram:  ";
