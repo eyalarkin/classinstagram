@@ -21,6 +21,8 @@ const client = new MongoClient(uri);
 
 const app = express();
 
+const accessToken = 'EAAIxmAYWMmEBOZCXzLtVhxg6fJiUaEuc5eL1afZBxshV02emTfqK9eOQoeVtkx7ZCS7HT6ZAGbA0bciAFKDqMWIIKhQDuFCt5iDaZBWpfdWgPfdzgetPgmtoqygm3wHNZBe2I6VEBcIO4t76TT86rZBGmB1w5cNPD1yLddHc0vQuCy1EaSDDpneVtRBi1YzjAlX';
+const accountID = '17841457828060732';
 
 app.set('views', path.resolve(__dirname, 'templates'));
 app.set('view engine', 'ejs');
@@ -90,7 +92,7 @@ app.post('/rejectClick', async (req, res) => {
     const collection = database.collection('applications');
     try {
         await client.connect();
-        let filter = req.body;
+        let filter = {handle: req.body.handle};
         const result = await collection.deleteOne(filter);
         console.log('Deleted this user: ', req.body.handle);
         res.sendStatus(201);
@@ -106,10 +108,47 @@ app.post('/approveClick', async (req, res) => {
     const collection = database.collection('applications');
     try {
         await client.connect();
-        let filter = req.body;
-        const result = await collection.deleteOne(filter);
-        console.log('Approved and deleted this user: ', req.body.handle);
-        res.sendStatus(201);
+        let filter = {handle: req.body.handle};
+        let person = req.body;
+        if (person.images.length == 1) {
+            url = 'https://class-instagram.onrender.com/' + person.images[0];
+            containerID = await createSingleItem(url, person.bio);
+            if (containerID) {
+                success = await postSingleItem(containerID);
+                if (success) {
+                    const result = await collection.deleteOne(filter);
+                    console.log('Approved and deleted this user: ', person.handle);
+                    res.sendStatus(201);
+                } else {
+                    console.error("couldn't make post for %s", person.handle);
+                }
+            } else {
+                console.error("couldn't make container for %s", person.handle);
+            }
+        } else if (person.images.length > 1) {
+            postIDs = [];
+            for (i = 0; i < person.images.length; i++) {
+                postID = await createCarouselItem(person.images[i]);
+                postIDs.push(postID);
+            }
+            containerID = createCarousel(postIDs, person.bio);
+            if (containerID) {
+                success = postCarousel(containerID);
+                if (success) {
+                    const result = await collection.deleteOne(filter);
+                    console.log('Approved and deleted this user: ', req.body.handle);
+                    res.sendStatus(201);
+                } else {
+                    console.error("couldn't post carousel for %s", person.handle);
+                }
+            } else {
+                console.error("couldn't create carousel container for %s", person.handle);
+            }
+
+        } else {
+            console.error("no images in person %s", person.handle);
+        }
+
     } catch (e) {
         console.error(e);
     } finally {
@@ -182,4 +221,62 @@ async function listAll(client, collection) {
         const result = await cursor.toArray();
 
         return result;
+}
+
+async function createCarouselItem(imageUrl) {
+    const result = await axios.post(`https://graph.facebook.com/v18.0/${accountID}/media?image_url=${imageUrl}&is_carousel_item=true&access_token=${accessToken}`);
+    if (result.data.id) {
+        return result.data.id;
+    } else {
+        console.log(result.data);
+        return null;
+    }
+}
+
+async function createCarousel(postIDs, caption){
+    pics = ""
+    for (i = 0; i < postIDs.length; i++) {
+        if (i != postIDs.length - 1) {
+            pics += postIDs[i] + '%2C';
+        } else {
+            pics += postIDs[i];
+        }
+    }
+    const result = await axios.post(`https://graph.facebook.com/v18.0/${accountID}/media?caption=${caption}&media_type=CAROUSEL&children=${pics}&access_token=${accessToken}`);
+    if (result.data.id) {
+        return result.data.id;
+    } else {
+        console.log(result.data);
+        return null;
+    }
+}
+
+async function postCarousel(carouselID) {
+    const result = await axios.post(`https://graph.facebook.com/v18.0/${accountID}/media_publish?creation_id=${carouselID}&access_token=${accessToken}`);
+    if (result.data.id) {
+        return true;
+    } else {
+        console.log(result.data);
+        return false;
+    }
+}
+
+async function createSingleItem(imageUrl, caption) {
+    const result = await axios.post(`https://graph.facebook.com/v18.0/${accountID}/media?image_url=${imageUrl}&caption=${caption}&access_token=${accessToken}`);
+    if (result.data.id) {
+        return result.data.id;
+    } else {
+        console.log(result.data);
+        return null;
+    }
+}
+
+async function postSingleItem(containerID) {
+    const result = await axios.post(`https://graph.facebook.com/v18.0/${accountID}/media_publish?creation_id=${containerID}&access_token=${accessToken}`);
+    if (result.data.id) {
+        return true;
+    } else {
+        console.log(result.data);
+        return false;
+    }
 }

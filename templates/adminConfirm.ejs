@@ -4,12 +4,21 @@
     <head>
         <meta charset="utf-8" />
         <title>Admin</title>
+        <script>
+            function confirmPassword() {
+                if (document.getElementById("password").value == "335") {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        </script>
     </head>
 
     <body>
         <h1>Admin Page for Class Instagrams</h1>
-        <form method="post" action="/admin">
-            Password:<input type="text" id="password" name="password">
+        <form method="post" action="/admin" onsubmit="confirmPassword()">
+            Password:<input type="password" id="password" name="password">
             <button type="submit">Go</button>
         </form>
     </body>

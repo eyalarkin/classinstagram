@@ -1,29 +1,16 @@
-# README #
+# ClassInstagram (CMSC335 Final Project) #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+### Team Members ###
 
-### What is this repository for? ###
+* Eyal Arkin
+* Hardik Bhardwaj
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### App Description ###
 
-### How do I get set up? ###
+This app is a portal for incoming students to universities. It allows a user to submit their name, instagram username, and a bio. The admin of the app then has the option to either approve or reject the post. An approval will submit the post to the community Instagram of the incoming class that student belongs to. There, they can meet other incoming students and find potential new roomates.
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### Links ###
 
-### Contribution guidelines ###
+* [Instagram Graph API](https://developers.facebook.com/docs/instagram-api/)
 
-* Writing tests
-* Code review
-* Other guidelines
 
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact

@@ -43,9 +43,15 @@ function main() {
             num.textContent = currPerson;
         } else {
             console.log('No image found for current person and photo index');
-            slideshow.src = 'uploads/corona.png';
+            slideshow.src = 'uploads/noppl.jpg';
             accountName.textContent = "no more posts in the queue...";
+            accountName.textContent = "";
+            accountHandle.textContent = "";
+            accountSchool.textContent = "";
+            accountBio.textContent = "";
         }
+
+        displayStatus.innerHTML = "";
 
     }
 
@@ -59,7 +65,7 @@ function main() {
         if (people.length > 0) {
             console.log('reject for %s was clicked', people[currPerson].handle);
 
-            data = {handle: people[currPerson].handle};
+            data = people[currPerson];
             console.log(JSON.stringify(data));
 
             const options = {
@@ -92,7 +98,7 @@ function main() {
         if (people.length > 0) {
             console.log('approve for %s was clicked', people[currPerson].handle);
 
-            data = {handle: people[currPerson].handle};
+            data = people[currPerson];
             console.log(JSON.stringify(data));
 
             const options = {
