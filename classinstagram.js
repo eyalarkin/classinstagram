@@ -128,7 +128,7 @@ app.post('/approveClick', async (req, res) => {
         } else if (person.images.length > 1) {
             postIDs = [];
             for (i = 0; i < person.images.length; i++) {
-                postID = await createCarouselItem(person.images[i]);
+                postID = await createCarouselItem('https://class-instagram.onrender.com/' + person.images[i]);
                 postIDs.push(postID);
             }
             containerID = createCarousel(postIDs, person.bio);
