@@ -4,14 +4,43 @@
 <head>
     <meta charset="utf-8" />
     <title>Admin</title>
+    <style>
+        #slideshow {
+            width: 30%;
+            height: auto;
+            border: 0.5rem double black;
+        }
+        .accountInfo {
+            display: flex;
+            align-items: center; /* This will vertically center the child elements */
+        }
+        .accountText {
+            padding: 10%;
+        }
+    </style>
+    <script src="admin.js"></script>
 </head>
 
 <body>
     <h1>Admin Page</h1>
     <h3>Pictures in Queue</h3>
+    <span id="num"></span>
     <div class="middle">
-        <img src="uploads/corona.png"><br>
-        <button id="next">Next</button><button id="back">Previous</button>
+        <div class="accountInfo">
+            <img src="uploads/corona.png" id="slideshow">
+            <div class="accountText">
+                <span><b>Name: </b></span><span id="accountName"></span><br><br>
+                <span><b>Handle: </b></span><span id="accountHandle"></span><br><br>
+                <span><b>School: </b></span><span id="accountSchool"></span><br><br>
+                <span><b>Bio: </b></span>
+                <p id="accountBio"></p>
+                <button id="reject" class="controls">Reject</button>&nbsp&nbsp<button id="approve" class="controls">Approve</button>
+                <p id="status"></p>
+            </div>
+        </div>
+        <br><br>
+        <button id="back" class="controls">Previous</button>&nbsp&nbsp<button id="next" class="controls">Next</button><br>
+        <button id="backPerson" class="controls">Previous Person</button>&nbsp&nbsp<button id="nextPerson" class="controls" >Next Person</button>
     </div>
 </body>
 

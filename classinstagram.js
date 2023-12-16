@@ -7,9 +7,12 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
+process.stdin.setEncoding('utf8');
+
 const dbAndCollection = {db: 'Cluster0', collection: 'applications'};
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const { emitWarning } = require('process');
 
 const uri = "mongodb+srv://hardikbhardwaj676:HHardik003@cluster0.bddhgqd.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
@@ -22,6 +25,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static('templates'));
 app.use('/uploads', express.static('uploads'));
+app.use(bodyParser.json());
 
 const port = 443;
 
@@ -60,6 +64,7 @@ app.post('/submit', upload.array('profile-images', 10), async (req, res) => {
         console.log("Picture " + i + " uploaded to: " + req.files[i].path);
     }
     try {
+        await client.connect();
         const database = client.db('Cluster0');
         const collection = database.collection('applications');
         const result = await collection.insertOne({
@@ -78,6 +83,38 @@ app.post('/submit', upload.array('profile-images', 10), async (req, res) => {
     }
 });
 
+app.post('/rejectClick', async (req, res) => {
+    const database = client.db('Cluster0');
+    const collection = database.collection('applications');
+    try {
+        await client.connect();
+        let filter = req.body;
+        const result = await collection.deleteOne(filter);
+        console.log('Deleted this user: ', req.body.handle);
+        res.sendStatus(201);
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+});
+
+app.post('/approveClick', async (req, res) => {
+    const database = client.db('Cluster0');
+    const collection = database.collection('applications');
+    try {
+        await client.connect();
+        let filter = req.body;
+        const result = await collection.deleteOne(filter);
+        console.log('Approved and deleted this user: ', req.body.handle);
+        res.sendStatus(201);
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+});
+
 app.get('/errorSubmission', (req, res) => {
     res.render("errorSubmission");
 });
@@ -88,16 +125,13 @@ app.get('/identity', (req, res) => {
 
 app.post('/admin', async (req, res) => {
     try {
-        await client.connect();
-        let filter = {};
-        const cursor = client.db(dbAndCollection.db)
-        .collection(dbAndCollection.collection)
-        .find(filter);
+        const database = client.db('Cluster0');
+        const collection = database.collection('applications');
 
-        const result = await cursor.toArray();
-        console.log(`Found: ${result.length} movies`);
+        const result = await listAll(client, collection);
+        console.log(`Found: ${result.length} people`);
         console.log(result);
-        fs.writeFile("data.json", result.toString(), function(err) {
+        fs.writeFile("uploads/data.json", JSON.stringify(result), function(err) {
             if (err) {
                 console.log(err);
             }
@@ -115,3 +149,35 @@ app.post('/admin', async (req, res) => {
 app.get('/admin', (req, res) => {
     res.send("uh oh");
 });
+
+const prompt = "classinstagram:  ";
+process.stdout.write(prompt);
+process.stdin.on("readable", async function () {
+    let input = process.stdin.read();
+    if (input != null) {
+        let cmd = input.trim();
+        if (cmd == "stop") {
+            process.stdout.write("Shutting down the server\n");
+            process.exit(0);
+        } else if (cmd == "list") {
+            const database = client.db('Cluster0');
+            const collection = database.collection('applications');
+            const result = await listAll(client, collection);
+            console.log(result);
+        } else {
+            process.stdout.write("Invalid command: " + cmd + "\n");
+        }
+        process.stdout.write(prompt);
+        process.stdin.resume();
+    }
+});
+
+async function listAll(client, collection) {
+    await client.connect();
+        let filter = {};
+        const cursor = collection.find(filter);
+
+        const result = await cursor.toArray();
+
+        return result;
+}
