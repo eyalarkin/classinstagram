@@ -131,9 +131,9 @@ app.post('/approveClick', async (req, res) => {
                 postID = await createCarouselItem('https://class-instagram.onrender.com/' + person.images[i]);
                 postIDs.push(postID);
             }
-            containerID = createCarousel(postIDs, person.bio);
+            containerID = await createCarousel(postIDs, person.bio);
             if (containerID) {
-                success = postCarousel(containerID);
+                success = await postCarousel(containerID);
                 if (success) {
                     const result = await collection.deleteOne(filter);
                     console.log('Approved and deleted this user: ', req.body.handle);
