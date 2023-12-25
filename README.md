@@ -1,9 +1,4 @@
-# ClassInstagram (CMSC335 Final Project) #
-
-### Team Members ###
-
-* Eyal Arkin
-* Hardik Bhardwaj
+# ClassInstagram #
 
 ### App Description ###
 
@@ -12,4 +7,3 @@ This app is a portal for incoming students to universities. It allows a user to 
 ### Links ###
 
 * [Instagram Graph API](https://developers.facebook.com/docs/instagram-api/)
-* [YouTube Demo Link](https://youtu.be/jCYysUe7mYc)
